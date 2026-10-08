@@ -1,0 +1,16 @@
+services:
+  app1:
+    build: .
+
+  app2:
+    build: .
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8000:80"
+    depends_on:
+      - app1
+      - app2
