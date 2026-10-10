@@ -1,12 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('fetch') {
-            steps {
-                echo 'fetcing the code from GitHub'
-                sh 'ls'
-            }
-        }
+        // no fetch stage: "Pipeline script from SCM" checks out the repo automatically
         stage('Pylint') {
             steps {
                 echo 'running Pylint on the code'
@@ -14,7 +9,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                echo 'building a Docker image out of the code'
+                sh 'docker build -t nadaveg27/weather-app:$BUILD_NUMBER .'
             }
         }
         stage('test') {
