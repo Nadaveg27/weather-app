@@ -39,7 +39,10 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                echo 'deploying the weather-app container on the host\'s Docker'
+                 sh '''
+                    docker rm -f weather-app || true
+                    docker run -d --name weather-app -p 8090:5000 nadaveg27/weather-app:$BUILD_NUMBER                    docker run --rm --network host curlimages/curl -sf --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8090/health
+                '''
             }
         }
     }
