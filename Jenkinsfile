@@ -4,7 +4,7 @@ pipeline {
         // no fetch stage: "Pipeline script from SCM" checks out the repo automatically
         stage('Pylint') {
             steps {
-                echo 'running Pylint on the code'
+                sh '''docker run --rm -v jenkins_home:/var/jenkins_home -w "$WORKSPACE" python:3.12-slim sh -c 'pip install -q -r requirements.txt pylint && pylint app.py' '''
             }
         }
         stage('build') {
