@@ -25,7 +25,12 @@ pipeline {
         }
         stage('push') {
             steps {
-                echo 'pushing Docker image to Docker Hub'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+                    sh '''
+                        echo "$DH_TOKEN" | docker login -u "$DH_USER" --password-stdin
+                        docker push nadaveg27/weather-app:$BUILD_NUMBER
+                    '''
+                }
             }
         }
         stage('deploy') {
