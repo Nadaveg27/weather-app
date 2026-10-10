@@ -4,7 +4,13 @@ pipeline {
         // no fetch stage: "Pipeline script from SCM" checks out the repo automatically
         stage('Pylint') {
             steps {
-                sh '''docker run --rm -v jenkins_home:/var/jenkins_home -w "$WORKSPACE" python:3.12-slim sh -c 'pip install -q -r requirements.txt pylint && pylint app.py' '''
+                sh '''
+                    threshold=5
+                    out=$(docker run --rm -v jenkins_home:/var/jenkins_home -w "$WORKSPACE" python:3.12-slim sh -c 'pip install -q -r requirements.txt pylint && pylint app.py')
+                    echo "$out"
+                    score=$(echo "$out" | grep -o 'rated at [-0-9.]*' | awk '{print $NF}')
+                    awk -v s="$score" -v t="$threshold" 'BEGIN { exit !(s > t) }' || { echo "Pylint score $score is not above $threshold"; exit 1; }
+                    '''
             }
         }
         stage('build') {
