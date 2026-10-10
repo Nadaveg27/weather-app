@@ -14,7 +14,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh 'building a Docker image out of the code'
+                echo 'building a Docker image out of the code'
             }
         }
         stage('test') {
